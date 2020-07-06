@@ -13,7 +13,7 @@ class CreateEmployeeWebHistoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('employee_web_histories', function (Blueprint $table) {
+        Schema::create('employee_web_history', function (Blueprint $table) {
             $table->id();
             $table->string('ip_address',39);
             $table->string('url');
@@ -29,6 +29,6 @@ class CreateEmployeeWebHistoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('employee_web_histories');
+        Schema::dropIfExists('employee_web_history');
     }
 }

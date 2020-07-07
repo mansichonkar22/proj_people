@@ -3,19 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use App\employee;
 use App\employee_web_history;
 
 class ApiController extends Controller
 {
+  //GET ALL Employees Available
     public function getAllEmployees() {
         $employee = employee::get()->toJson(JSON_PRETTY_PRINT);
-        $emp_web_history = employee_web_history::get()->toJson(JSON_PRETTY_PRINT);
-        //dd($emp_web_history);
         return response($employee,200);    
-
     }
-  
+
+  //Create NEW Employee (feed data using postman)
     public function createEmployee(Request $request) {
         $employee = new employee;
         $employee->emp_id = $request->emp_id;
@@ -28,7 +28,8 @@ class ApiController extends Controller
         ], 201);
 
     }
-  
+
+  //GET Existing Employee by IpAddress (feed data using postman)
     public function getEmployee($ip_address) {
         if (employee::where('ip_address', $ip_address)->exists()) {
             $employee = employee::where('ip_address', $ip_address)->get()->toJson(JSON_PRETTY_PRINT);
@@ -37,9 +38,10 @@ class ApiController extends Controller
             return response()->json([
               "message" => "employee not found"
             ], 404);
-        }    
+        }   
     }
   
+  //Delete Existing Employee by IpAddress (feed data using postman)
     public function deleteEmployee ($ip_address) {
         if(employee::where('ip_address', $ip_address)->exists()) {
             $employee = employee::find($ip_address);
@@ -55,6 +57,12 @@ class ApiController extends Controller
           }    
     }  
 
+  //GET All Available Web Search history for existing Employees
+    public function getAll_emp_web_history() {
+      $emp_web_history = employee_web_history::get()->toJson(JSON_PRETTY_PRINT);
+      return response($emp_web_history,200);    
+  }
+  //Create NEW Web Search history for existing Employee (feed data using postman)
     public function create_emp_web_history(Request $request) {
 
        if ($request->isMethod('POST')) 
@@ -84,6 +92,7 @@ class ApiController extends Controller
        }
     }
   
+  //GET Web Search history for existing Employee by IpAddress (feed data using postman)
     public function get_emp_web_history($ip_address) 
     {
       if (employee_web_history::where('ip_address', $ip_address)->exists()) 
@@ -99,6 +108,7 @@ class ApiController extends Controller
       }    
     }
   
+  //Delete Web Search history for existing Employee by IpAddress (feed data using postman)
     public function delete_emp_web_history($ip_address) {
        // Delete all the web search history data mapped with ip_address.
        if(employee_web_history::where('ip_address', $ip_address)->exists()) 

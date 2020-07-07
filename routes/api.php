@@ -17,11 +17,13 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+/*API Route for Employees*/
 Route::get('employees', 'ApiController@getAllEmployees');
 Route::get('employees/{ip_address}', 'ApiController@getEmployee');
 Route::post('employees', 'ApiController@createEmployee');
 Route::delete('employees/{ip_address}','ApiController@deleteEmployee');
-
+/*API Route for Employees Web History*/
+Route::get('emp_web_history', 'ApiController@getAll_emp_web_history');
 Route::get('emp_web_history/{ip_address}', 'ApiController@get_emp_web_history');
 Route::post('emp_web_history', 'ApiController@create_emp_web_history');
 Route::delete('emp_web_history/{ip_address}','ApiController@delete_emp_web_history');

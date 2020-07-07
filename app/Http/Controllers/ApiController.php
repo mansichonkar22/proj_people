@@ -38,7 +38,6 @@ class ApiController extends Controller
               "message" => "employee not found"
             ], 404);
         }    
-    
     }
   
     public function deleteEmployee ($ip_address) {
@@ -57,13 +56,15 @@ class ApiController extends Controller
     }  
 
     public function create_emp_web_history(Request $request) {
-       //It will first check if the ip address is assigned to any employee or not 
-       //if the ip address is there then it will insert 
-       //the url  variable [url] to the mapped  ip_address [ip_address],
-       // other with it will throw error.
 
-       //ERROR :: The GET method is not supported for this route. Supported methods: POST.
-       if (employee::where('ip_address', $request->ip_address)->exists()) {
+       if ($request->isMethod('POST')) 
+       {
+          $request_data = $request->All();
+   
+          $ip_address = employee::where('ip_address', '=', $request_data['ip_address'])->get();
+
+          if (!$ip_address->isEmpty()) 
+          {
             $emp_web_history = new employee_web_history;
             $emp_web_history->ip_address = $request->ip_address;
             $emp_web_history->url = $request->url;
@@ -73,23 +74,48 @@ class ApiController extends Controller
             return response()->json([
                 "message" => "employee web history record created"
             ], 201);
-        } 
-        else 
-        {
+          }
+          else 
+          {
             return response()->json([
                 "message" => "employee with IP Address not found"
               ], 404);
-        }
-
+          }
+       }
     }
   
-    public function get_emp_web_history($ip_address) {
-    //Print out the employee details with his web search history stored under the variable [ip_address].
-    // Print NULL if that ip_address doesn’t have any data
+    public function get_emp_web_history($ip_address) 
+    {
+      if (employee_web_history::where('ip_address', $ip_address)->exists()) 
+      {
+          $emp_web_history = employee_web_history::where('ip_address', $ip_address)->get()->toJson(JSON_PRETTY_PRINT);
+          return response($emp_web_history, 200);
+      } 
+      else 
+      {
+          return response()->json([
+            "message" => "emp_web_history not found"
+          ], 404);
+      }    
     }
   
-    public function delete_emp_web_history($id) {
+    public function delete_emp_web_history($ip_address) {
        // Delete all the web search history data mapped with ip_address.
+       if(employee_web_history::where('ip_address', $ip_address)->exists()) 
+       {
+          $emp_web_history = employee_web_history::where('ip_address', $ip_address);
+          $emp_web_history->delete();
+
+          return response()->json([
+            "message" => "records deleted"
+          ], 202);
+        } 
+        else 
+        {
+          return response()->json([
+            "message" => "emp_web_history not found"
+          ], 404);
+        } 
     }  
 
 }
